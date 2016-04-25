@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Api::V1::UsersController do
-  
+
   describe "GET #show" do
     before(:each) do
       @user = FactoryGirl.create :user
@@ -54,10 +54,13 @@ describe Api::V1::UsersController do
   end
 
   describe "PUT/PATCH #update" do
+    before(:each) do
+      @user = FactoryGirl.create :user
+      api_authorization_header @user.auth_token
+    end
 
     context "when successfully updated" do
       before(:each) do
-        @user = FactoryGirl.create :user
         patch :update, { id: @user.id,
                          user: { email: "newmail@example.com" } }
       end
@@ -72,7 +75,6 @@ describe Api::V1::UsersController do
 
     context "when not created" do
       before(:each) do
-        @user = FactoryGirl.create :user
         patch :update, { id: @user.id,
                          user: { email: "badmail.com" } }
       end
@@ -94,6 +96,7 @@ describe Api::V1::UsersController do
   describe "DELETE #destroy" do
     before(:each) do
       @user = FactoryGirl.create :user
+      api_authorization_header @user.auth_token
       delete :destroy, { id: @user.id }
     end
 
