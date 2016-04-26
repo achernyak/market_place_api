@@ -24,7 +24,7 @@ describe Api::V1::ProductsController do
 
     it "returns 4 records from the database" do
       products_response = json_response
-      expect(products_response[:products]).to have(4).items
+      expect(products_response[:products].size).to eq(4)
     end
 
     it { should respond_with 200 }
@@ -108,5 +108,16 @@ describe Api::V1::ProductsController do
 
       it { should respond_with 422 }
     end
+  end
+
+  describe "DELETE #destroy" do
+    before(:each) do
+      @user = FactoryGirl.create :user
+      @product = FactoryGirl.create :product, user: @user
+      api_authorization_header @user.auth_token
+      delete :destroy, { user_id: @user.id, id: @product.id }
+    end
+
+    it { should respond_with 204}
   end
 end
